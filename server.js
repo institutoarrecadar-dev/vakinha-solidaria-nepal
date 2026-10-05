@@ -6,7 +6,27 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const INFINITE_TAG = (process.env.INFINITE_TAG || '').replace(/^\$/, '').trim();
 const BASE_URL = (process.env.BASE_URL || '').replace(/\/$/, '');
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 
+function requireAdmin(req, res, next) {
+  const auth = req.headers.authorization || '';
+
+  if (!auth.startsWith('Basic ')) {
+    res.set('WWW-Authenticate', 'Basic realm="Painel Administrativo"');
+    return res.status(401).send('Acesso restrito.');
+  }
+
+  const decoded = Buffer.from(auth.slice(6), 'base64').toString();
+  const separator = decoded.indexOf(':');
+  const password = separator >= 0 ? decoded.slice(separator + 1) : '';
+
+  if (!ADMIN_PASSWORD || password !== ADMIN_PASSWORD) {
+    res.set('WWW-Authenticate', 'Basic realm="Painel Administrativo"');
+    return res.status(401).send('Senha incorreta.');
+  }
+
+  next();
+}
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname)));
 
