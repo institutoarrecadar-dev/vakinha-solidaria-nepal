@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAKINHA SOLIDÁRIA DO NEPAL</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f6f7;color:#252525}
+header{background:#16a34a;color:#fff;padding:18px 20px;box-shadow:0 2px 8px #0002}
+.logo{max-width:1050px;margin:auto;font-size:30px;font-weight:800}
+.container{max-width:1050px;margin:25px auto;padding:0 15px}
+.card{background:#fff;border-radius:14px;box-shadow:0 3px 15px #0001;padding:20px;margin-bottom:20px}
+.hero-img{width:100%;height:360px;object-fit:cover;border-radius:12px;background:#e5e7eb;display:block}
+h1{font-size:28px;margin:20px 0 10px}
+.campaign-text{font-size:17px;line-height:1.6;white-space:pre-wrap}
+.stats{display:flex;gap:15px;margin:20px 0}
+.stat{flex:1;background:#f0fdf4;border-radius:10px;padding:15px}
+.stat small{display:block;color:#666;margin-bottom:5px}
+.stat strong{font-size:23px;color:#15803d}
+.progress{height:14px;background:#e5e7eb;border-radius:20px;overflow:hidden}
+.progress-bar{height:100%;width:0;background:#16a34a;transition:.3s}
+.donation-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:15px 0}
+.amount{border:2px solid #d1d5db;background:#fff;padding:15px;border-radius:9px;font-size:17px;font-weight:bold;cursor:pointer}
+.amount:hover,.amount.active{border-color:#16a34a;background:#f0fdf4;color:#15803d}
+.custom{width:100%;padding:14px;border:1px solid #ccc;border-radius:9px;font-size:16px}
+.donate{width:100%;margin-top:14px;border:0;background:#16a34a;color:white;font-size:19px;font-weight:bold;padding:16px;border-radius:9px;cursor:pointer}
+.donate:hover{background:#15803d}
+.notice{font-size:13px;color:#666;margin-top:12px;line-height:1.5}
+.admin{border:2px dashed #16a34a}
+.admin h2{margin-top:0}
+label{font-weight:bold;display:block;margin:12px 0 6px}
+input[type=text],input[type=number],input[type=url],textarea,select{width:100%;padding:11px;border:1px solid #ccc;border-radius:8px;font-size:15px}
+textarea{min-height:110px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.admin button{border:0;background:#111827;color:#fff;padding:12px 18px;border-radius:8px;cursor:pointer;margin-top:12px}
+.secondary{background:#e5e7eb!important;color:#111827!important}
+.status{margin-top:12px;padding:10px;border-radius:8px;background:#f3f4f6;font-size:14px}
+footer{text-align:center;color:#777;padding:25px;font-size:13px}
+@media(max-width:650px){
+ .hero-img{height:230px}.stats{flex-direction:column}.donation-grid{grid-template-columns:repeat(2,1fr)}
+ .row{grid-template-columns:1fr}h1{font-size:24px}
+}
+</style>
+</head>
+<body>
+
+<header><div class="logo">VAKINHA SOLIDÁRIA DO NEPAL</div></header>
+
+<main class="container">
+<section class="card">
+  <img id="campaignImage" class="hero-img" alt="Imagem da campanha">
+  <h1 id="campaignTitle">Título da sua campanha</h1>
+  <div id="campaignText" class="campaign-text">Escreva aqui a história da sua campanha e explique por que as doações são importantes.</div>
+
+  <div class="stats">
+    <div class="stat"><small>Arrecadado</small><strong id="raised">R$ 0,00</strong></div>
+    <div class="stat"><small>Meta</small><strong id="goal">R$ 10.000,00</strong></div>
+  </div>
+
+  <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+
+  <h2>Escolha o valor da doação</h2>
+  <div class="donation-grid">
+    <button class="amount" data-value="50">R$ 50</button>
+    <button class="amount" data-value="100">R$ 100</button>
+    <button class="amount" data-value="200">R$ 200</button>
+    <button class="amount" data-value="350">R$ 350</button>
+    <button class="amount" data-value="500">R$ 500</button>
+    <button class="amount" data-value="750">R$ 750</button>
+  </div>
+  <input id="customAmount" class="custom" type="number" min="1" step="0.01" placeholder="Ou digite outro valor (R$)">
+  <button id="donateButton" class="donate">DOAR AGORA</button>
+
+  <div class="notice">
+    O botão de pagamento abaixo está preparado para receber a integração de um gateway.
+    Nenhum pagamento é processado por este arquivo sozinho.
+  </div>
+  <div id="paymentStatus" class="status" style="display:none"></div>
+</section>
+
+<section class="card">
+  <h2>Sobre a campanha</h2>
+  <div id="extraText" class="campaign-text">Adicione informações complementares sobre a campanha.</div>
+</section>
+
+<section class="card admin">
+  <h2>⚙️ Painel de edição</h2>
+  <p>Use este painel para alterar os dados exibidos no site. As alterações ficam salvas neste navegador.</p>
+
+  <label>Título</label>
+  <input id="editTitle" type="text">
+
+  <label>Foto da campanha</label>
+  <input id="imageFile" type="file" accept="image/*">
+  <p class="notice">Escolha uma foto da galeria do celular ou do computador. Ela aparecerá automaticamente na imagem principal.</p>
+  <button type="button" id="removeImage" class="secondary">Remover foto</button>
+
+  <label>Ou use uma URL de imagem</label>
+  <input id="editImage" type="url" placeholder="https://...">
+
+  <label>Texto da campanha</label>
+  <textarea id="editText"></textarea>
+
+  <label>Texto complementar</label>
+  <textarea id="editExtra"></textarea>
+
+  <div class="row">
+    <div>
+      <label>Arrecadado (R$)</label>
+      <input id="editRaised" type="number" min="0" step="0.01">
+    </div>
+    <div>
+      <label>Meta (R$)</label>
+      <input id="editGoal" type="number" min="1" step="0.01">
+    </div>
+  </div>
+
+  <h3>💳 InfinitePay</h3>
+  <label>InfiniteTag</label>
+  <input id="infiniteTag" type="text" placeholder="ex.: vakinhanePal">
+  <p class="notice">Digite sua InfiniteTag sem o símbolo $. A tag será salva neste navegador.</p>
+
+  <button id="saveButton">Salvar alterações</button>
+  <button id="resetButton" class="secondary">Restaurar exemplo</button>
+</section>
+</main>
+
+<footer>Vakinha • Página de campanha</footer>
+
+<script>
+const DEFAULTS = {
+  title: "VAKINHA SOLIDÁRIA DO NEPAL",
+  image: "",
+  text: "Escreva aqui a história da sua campanha e explique por que as doações são importantes.",
+  extra: "Adicione informações complementares sobre a campanha.",
+  raised: 0,
+  goal: 10000,
+  gatewayUrl: "",
+  infiniteTag: "",
+  gatewayProvider: "infinitepay"
+};
+
+let config = {...DEFAULTS, ...JSON.parse(localStorage.getItem("vakinhaConfig") || "{}")};
+let selectedAmount = null;
+
+function money(v){
+  return Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+}
+
+function render(){
+  document.getElementById("campaignTitle").textContent=config.title;
+  document.getElementById("campaignText").textContent=config.text;
+  document.getElementById("extraText").textContent=config.extra;
+  document.getElementById("raised").textContent=money(config.raised);
+  document.getElementById("goal").textContent=money(config.goal);
+
+  const pct=Math.min(100, Math.max(0,(Number(config.raised)/Number(config.goal))*100));
+  document.getElementById("progressBar").style.width=pct+"%";
+
+  const img=document.getElementById("campaignImage");
+  if(config.image){img.src=config.image; img.style.display="block";}
+  else{
+    img.removeAttribute("src");
+    img.style.display="block";
+    img.style.background="#e5e7eb";
+  }
+
+  document.getElementById("editTitle").value=config.title;
+  document.getElementById("editImage").value=config.image;
+  document.getElementById("editText").value=config.text;
+  document.getElementById("editExtra").value=config.extra;
+  document.getElementById("editRaised").value=config.raised;
+  document.getElementById("editGoal").value=config.goal;
+  document.getElementById("infiniteTag").value=config.infiniteTag;
+}
+
+document.querySelectorAll(".amount").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".amount").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    selectedAmount=Number(btn.dataset.value);
+    document.getElementById("customAmount").value="";
+  });
+});
+
+document.getElementById("customAmount").addEventListener("input",()=>{
+  selectedAmount=null;
+  document.querySelectorAll(".amount").forEach(b=>b.classList.remove("active"));
+});
+
+document.getElementById("donateButton").addEventListener("click",async()=>{
+  const custom=Number(document.getElementById("customAmount").value);
+  const amount=custom>0 ? custom : selectedAmount;
+
+  if(!amount || amount<=0){
+    alert("Escolha ou digite um valor para doar.");
+    return;
+  }
+
+  const status=document.getElementById("paymentStatus");
+  status.style.display="block";
+
+  status.textContent="Conectando à InfinitePay...";
+
+  try{
+    const response=await fetch(config.gatewayUrl || "/api/create-checkout",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        amount:amount,
+        currency:"BRL",
+        campaign:config.title,
+        returnUrl:window.location.href
+      })
+    });
+
+    if(!response.ok) throw new Error("Falha no gateway");
+    const data=await response.json();
+
+    if(data.checkout_url) window.location.href=data.checkout_url;
+    else if(data.payment_url) window.location.href=data.payment_url;
+    else status.textContent="Pagamento criado. Resposta recebida do gateway.";
+  }catch(e){
+    status.textContent="Não foi possível iniciar o pagamento. Verifique o endpoint do gateway e o backend.";
+  }
+});
+
+document.getElementById("removeImage").addEventListener("click",()=>{
+  config.image="";
+  document.getElementById("imageFile").value="";
+  document.getElementById("editImage").value="";
+  localStorage.setItem("vakinhaConfig",JSON.stringify(config));
+  render();
+});
+
+document.getElementById("imageFile").addEventListener("change",(event)=>{
+  const file=event.target.files[0];
+  if(!file) return;
+
+  if(!file.type.startsWith("image/")){
+    alert("Escolha um arquivo de imagem.");
+    event.target.value="";
+    return;
+  }
+
+  const reader=new FileReader();
+  reader.onload=()=>{
+    config.image=reader.result;
+    document.getElementById("editImage").value="";
+    render();
+    localStorage.setItem("vakinhaConfig",JSON.stringify(config));
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById("saveButton").addEventListener("click",()=>{
+  const imageUrl=document.getElementById("editImage").value.trim();
+
+  config={
+    title:document.getElementById("editTitle").value,
+    image:imageUrl || config.image || "",
+    text:document.getElementById("editText").value,
+    extra:document.getElementById("editExtra").value,
+    raised:Number(document.getElementById("editRaised").value)||0,
+    goal:Number(document.getElementById("editGoal").value)||1,
+    gatewayUrl:document.getElementById("gatewayUrl")?.value || "",
+    infiniteTag:document.getElementById("infiniteTag").value.trim().replace(/^\$/,""),
+    gatewayProvider:"infinitepay"
+  };
+  localStorage.setItem("vakinhaConfig",JSON.stringify(config));
+  render();
+  alert("Alterações salvas neste navegador.");
+});
+
+document.getElementById("resetButton").addEventListener("click",()=>{
+  config={...DEFAULTS};
+  localStorage.setItem("vakinhaConfig",JSON.stringify(config));
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
