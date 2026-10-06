@@ -104,7 +104,9 @@ app.post('/webhook/infinitepay', (req, res) => {
 app.get('/pagamento-concluido.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'pagamento-concluido.html'));
 });
-
+app.get('/admin', requireAdmin, (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
