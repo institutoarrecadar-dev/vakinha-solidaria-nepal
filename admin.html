@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Administrativo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f5f3;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 3px 15px rgba(0,0,0,.12);
+    }
+
+    h1 {
+      color: #168a45;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      border: 0;
+      border-radius: 8px;
+      background: #168a45;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .voltar {
+      background: #555;
+    }
+
+    #status {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>⚙️ Painel Administrativo</h1>
+
+  <label>Título da campanha</label>
+  <input id="title" type="text">
+
+  <label>URL da imagem</label>
+  <input id="image" type="url" placeholder="https://...">
+
+  <label>Texto da campanha</label>
+  <textarea id="text"></textarea>
+
+  <label>Texto complementar</label>
+  <textarea id="extra"></textarea>
+
+  <label>Valor arrecadado</label>
+  <input id="raised" type="number" step="0.01">
+
+  <label>Meta</label>
+  <input id="goal" type="number" step="0.01">
+
+  <button onclick="salvar()">💾 SALVAR ALTERAÇÕES</button>
+
+  <button class="voltar" onclick="window.location.href='/'">
+    ← VOLTAR PARA O SITE
+  </button>
+
+  <div id="status"></div>
+
+</div>
+
+<script>
+async function carregar() {
+  try {
+    const resposta = await fetch('/api/config');
+    const dados = await resposta.json();
+
+    document.getElementById('title').value = dados.title || '';
+    document.getElementById('image').value = dados.image || '';
+    document.getElementById('text').value = dados.text || '';
+    document.getElementById('extra').value = dados.extra || '';
+    document.getElementById('raised').value = dados.raised || 0;
+    document.getElementById('goal').value = dados.goal || 0;
+  } catch (erro) {
+    console.log(erro);
+  }
+}
+
+async function salvar() {
+  const dados = {
+    title: document.getElementById('title').value,
+    image: document.getElementById('image').value,
+    text: document.getElementById('text').value,
+    extra: document.getElementById('extra').value,
+    raised: Number(document.getElementById('raised').value),
+    goal: Number(document.getElementById('goal').value)
+  };
+
+  try {
+    const resposta = await fetch('/api/config', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(dados)
+    });
+
+    if (resposta.ok) {
+      document.getElementById('status').innerText =
+        '✅ Alterações salvas com sucesso!';
+    } else {
+      document.getElementById('status').innerText =
+        '❌ Erro ao salvar.';
+    }
+
+  } catch (erro) {
+    document.getElementById('status').innerText =
+      '❌ Erro de conexão.';
+  }
+}
+
+carregar();
+</script>
+
+</body>
+</html>
